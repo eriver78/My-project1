@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Pistol : NONAUTOGUN
 {
-    public override float ScopeSpread =>1
+    public override float ScopeSpread => 1;
 
     public override float Delay => 0.1f;
 
