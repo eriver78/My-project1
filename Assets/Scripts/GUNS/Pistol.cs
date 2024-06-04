@@ -17,4 +17,9 @@ public class Pistol : NONAUTOGUN
     public override float ReloadTime => 1.3f;
 
     public override float Spread => 2;
+
+    protected override void Prepare()
+    {
+        Launch();
+    }
 }

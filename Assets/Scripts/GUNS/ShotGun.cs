@@ -17,4 +17,14 @@ public class ShotGun : NONAUTOGUN
     public override float ReloadTime => 1.2f;
 
     public override float Spread => 6;
+
+    private int bullets = 8;
+
+    protected override void Prepare()
+    {
+        for (int i = 0; i < bullets; i++) 
+        {
+            Launch();
+        }
+    }
 }
