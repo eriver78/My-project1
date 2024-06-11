@@ -57,14 +57,14 @@ public class PlayerController : MonoBehaviour
         if (grapple.used) return;
         Vector3 hitpos;
         bool got;
-        if(Physics.Raycast(transform.position,cam.transform.forward, out RaycastHit hit, 12))            
+        if(Physics.Raycast(transform.position,cam.transform.forward, out RaycastHit hit, 24))            
         {
             hitpos = hit.point;
             got = true;
         }
         else
         {
-            hitpos = transform.position + cam.transform.forward * 12;
+            hitpos = transform.position + cam.transform.forward * 24;
             got = false;
         }
         grapple.Launch(hitpos,got);

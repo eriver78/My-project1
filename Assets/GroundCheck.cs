@@ -8,5 +8,8 @@ public class GroundCheck : MonoBehaviour
     {
         gameObject.GetComponentInParent<PlayerController>().onGround=true;
     }
-
+    private void OnTriggerExit(Collider other)
+    {
+        gameObject.GetComponentInParent<PlayerController>().onGround = false;
+    }
 }
