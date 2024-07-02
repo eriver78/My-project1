@@ -9,13 +9,16 @@ public abstract class AUTOGUN : Gun
 {
     public override void Shoot(InputAction.CallbackContext context)
     {
+        
         if (context.performed)
         {
+            if (CanShoot)
             StartCoroutine("Loop");
         }
         else if (context.canceled) 
         {
             StopCoroutine("Loop");
+            StartCoroutine("AllowShoot");
         }
     }
 
@@ -28,11 +31,14 @@ public abstract class AUTOGUN : Gun
         }
         while(ammo > 0)
         {
-            if (!CanShoot) continue;
+            Debug.Log("123");
+            
+            
             ammo--;
             Launch();
             CanShoot = false;
-            StartCoroutine("AllowShoot");
+            yield return new WaitForSeconds(Delay);
+            CanShoot = true;
         }
     }
     

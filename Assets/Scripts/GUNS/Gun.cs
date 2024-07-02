@@ -1,21 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public abstract class Gun : MonoBehaviour
 {
-    public abstract float ScopeSpread {  get; }
+    public abstract float ScopeSpread { get; }
 
     public abstract float Delay { get; }
 
     public abstract int Damage { get; }
 
-    public abstract int MagSize {  get; }
+    public abstract int MagSize { get; }
 
-    public abstract float Recoil { get; } 
+    public abstract float Recoil { get; }
 
-    public abstract float ReloadTime {  get; }    
+    public abstract float ReloadTime { get; }
 
     public abstract float Spread { get; }
 
@@ -35,26 +36,45 @@ public abstract class Gun : MonoBehaviour
     public bool scoped;
 
 
-    protected bool CanShoot;
+    protected bool CanShoot = true;
 
 
     public Animator anim;
+
+
+    public Camera cam;
 
 
     public abstract void Shoot(InputAction.CallbackContext context);
 
     public void Launch()
     {
-        source.Play();
-        if (Physics.Raycast(Camera.main.transform.position, GetSpread(), out RaycastHit hit,2000))
-        {
 
+        source.Play();
+
+        if (Physics.Raycast(cam.transform.position, GetSpread(), out RaycastHit hit, 2000))
+        {   
+            
+            if (hit.collider.gameObject.CompareTag("Player"))
+            {
+                ulong id = hit.collider.gameObject.GetComponent<PlayerController>().OwnerClientId;
+               DamageServerRpc(Damage, id);
+            }
         }
     }
+    
 
+    [ServerRpc(RequireOwnership = false)] 
+    public void  DamageServerRpc(  int damage, ulong id)
+    {
+        Debug.Log("456");
+        if (id != cam.GetComponentInParent<PlayerController>().OwnerClientId) return;
+        cam.GetComponentInParent<PlayerController>().gameObject.transform.position += new Vector3(0, 3, 0);
+    }
     public void Reload()
     {
         if (ammo == MagSize) return;
+
         anim.Play("Reload");
         reloading = true;
         StartCoroutine("EndReload");
@@ -62,7 +82,7 @@ public abstract class Gun : MonoBehaviour
     }
 
 
-    public IEnumerator AllowShoot() 
+    public IEnumerator AllowShoot()
     {
         yield return new WaitForSeconds(Delay);
         CanShoot = true;
@@ -72,6 +92,7 @@ public abstract class Gun : MonoBehaviour
     {
         yield return new WaitForSeconds(ReloadTime);
         ammo = MagSize;
+
         reloading = false;
     }
 
@@ -84,7 +105,7 @@ public abstract class Gun : MonoBehaviour
     }
     private Vector3 GetSpread()
     {
-        return Camera.main.transform.forward;
+        return cam.transform.forward;
     }
 }
 
