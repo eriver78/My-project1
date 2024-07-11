@@ -16,16 +16,22 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] Grapple grapple;
     [SerializeField] PlayerInput input;
     [SerializeField] Transform handle;
-    [SerializeField] Gun gun;
-
-    
+    public Gun[] guns;
+    [HideInInspector]
+    public int GunIndex = 0;
+    public int hp = 100, armor = 100;
+    [SerializeField] GameObject canvas;
 
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
         if (IsLocalPlayer)
         {
-            
+            guns[GunIndex].gameObject.SetActive(true);
+            Instantiate(canvas);
+            GameObject.Find("armor").GetComponent<Armor>().player = this;
+            GameObject.Find("Ammo").GetComponent<Ammo>().player = this;
+            GameObject.Find("Hp").GetComponent<HP>().player = this;
             cam.gameObject.SetActive(true);
             cameraRot = handle.transform.localEulerAngles;
             input.enabled = true;
@@ -37,9 +43,70 @@ public class PlayerController : NetworkBehaviour
 
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    public void DamageServerRpc(int damage)
+    {
+        DamageClientRpc(damage);
+    }
+    [ServerRpc]
+    public void WeaponServerRpc(int index)
+    {
+        guns[GunIndex].gameObject.SetActive(false);
+        GunIndex = index;
+        guns[GunIndex].gameObject.SetActive(true);
+    }
+
+
+    [ClientRpc]
+    public void DamageClientRpc(int damage)
+    {
+        if (damage <= armor)
+        {
+            armor -= damage;
+            return;
+        }
+        damage -= armor;
+        armor = 0;
+        if (damage < hp)
+        {
+            hp -= damage;
+            return;
+        }
+
+        hp = 0;
+        GetComponent<MeshRenderer>().material.color = Color.red;
+
+    }
+
+    public void Reload(InputAction.CallbackContext context)
+    {
+        if (!IsOwner) return;
+        if (!context.performed) return;
+        guns[GunIndex].Reload();
+    }
+
+    public void main(InputAction.CallbackContext context)
+    {
+        if (!IsOwner) return;
+        if (!context.performed) return;
+        if (GunIndex == 0) return;
+        if (guns[GunIndex].reloading) return;
+        WeaponServerRpc(0);
+    }
+
+    public void secondary(InputAction.CallbackContext context)
+    {
+        if (!IsOwner) return;
+        if (!context.performed) return;
+        if (GunIndex == 1) return;
+        if (guns[GunIndex].reloading) return;
+        WeaponServerRpc(1);
+    }
+
+
     public void Move(InputAction.CallbackContext context)
     {
-         if (!IsOwner) return;
+        if (!IsOwner) return;
         direction = context.ReadValue<Vector2>();
     }
 
@@ -52,7 +119,7 @@ public class PlayerController : NetworkBehaviour
     public void Fire(InputAction.CallbackContext context)
     {
         if (!IsOwner) return;
-        gun.Shoot(context);
+        guns[GunIndex].Shoot(context);
     }
 
     public void Jump(InputAction.CallbackContext context)
@@ -68,7 +135,7 @@ public class PlayerController : NetworkBehaviour
     {
 
         if (!IsOwner) return;
-        Debug.Log(NetworkManager.Singleton.IsHost);
+
         if (onGround)
         {
             Vector3 moveDirection = speed * (transform.right * direction.x + transform.forward * direction.y).normalized;
@@ -81,7 +148,7 @@ public class PlayerController : NetworkBehaviour
         transform.eulerAngles += new Vector3(0, pointer.x * sensitivityX, 0);
         cameraRot.x += -pointer.y * sensitivityY;
         cameraRot.x = Mathf.Clamp(cameraRot.x, -90, 90);
-      
+
         handle.localRotation = Quaternion.Euler(cameraRot);
     }
     public void Ability(InputAction.CallbackContext context)

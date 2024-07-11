@@ -12,7 +12,7 @@ public abstract class AUTOGUN : Gun
         
         if (context.performed)
         {
-            if (CanShoot)
+            if (CanShoot &&!reloading)
             StartCoroutine("Loop");
         }
         else if (context.canceled) 
@@ -31,7 +31,7 @@ public abstract class AUTOGUN : Gun
         }
         while(ammo > 0)
         {
-            Debug.Log("123");
+            
             
             
             ammo--;

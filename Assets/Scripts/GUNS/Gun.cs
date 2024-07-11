@@ -23,16 +23,17 @@ public abstract class Gun : MonoBehaviour
 
     public Vector3 scopePosition;
 
+    [HideInInspector]
 
     public int ammo;
 
 
     public AudioSource source;
 
-
+    [HideInInspector]
     public bool reloading;
 
-
+    [HideInInspector]
     public bool scoped;
 
 
@@ -57,20 +58,15 @@ public abstract class Gun : MonoBehaviour
             
             if (hit.collider.gameObject.CompareTag("Player"))
             {
-                ulong id = hit.collider.gameObject.GetComponent<PlayerController>().OwnerClientId;
-               DamageServerRpc(Damage, id);
+                hit.collider.gameObject.GetComponent<PlayerController>().DamageServerRpc(Damage);
             }
         }
     }
+
+
+
     
 
-    [ServerRpc(RequireOwnership = false)] 
-    public void  DamageServerRpc(  int damage, ulong id)
-    {
-        Debug.Log("456");
-        if (id != cam.GetComponentInParent<PlayerController>().OwnerClientId) return;
-        cam.GetComponentInParent<PlayerController>().gameObject.transform.position += new Vector3(0, 3, 0);
-    }
     public void Reload()
     {
         if (ammo == MagSize) return;

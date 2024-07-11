@@ -51,9 +51,27 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Pick",
+                    "name": "reload",
                     "type": "Button",
-                    "id": "b9a93cca-71e8-4d35-91bf-a4669b396264",
+                    "id": "9119bf18-d0c4-4cd1-ae38-be14205a6ab2",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "main",
+                    "type": "Button",
+                    "id": "6ccdb3e0-30ea-48d0-8193-90c987ea15f2",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "secondary",
+                    "type": "Button",
+                    "id": "046f8f33-d265-48eb-a254-65c8b5fc7f09",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -305,12 +323,34 @@
                 },
                 {
                     "name": "",
-                    "id": "2394957d-6815-4bc1-984a-cb20d44a8ccb",
-                    "path": "<Keyboard>/f",
+                    "id": "36e855ab-3c67-4af4-9031-225b487428ee",
+                    "path": "<Keyboard>/r",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Pick",
+                    "action": "reload",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b0e65b6b-068b-4f95-bb6c-185b216a4f42",
+                    "path": "<Keyboard>/1",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "main",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b7114420-cbd4-4fa6-b9dc-d399fab57fa6",
+                    "path": "<Keyboard>/2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "secondary",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

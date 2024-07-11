@@ -6,7 +6,7 @@ public class Rifle : AUTOGUN
 {
     public override float ScopeSpread => 3;
 
-    public override float Delay => 6;
+    public override float Delay => 0.6f;
 
     public override int Damage => 19;
 

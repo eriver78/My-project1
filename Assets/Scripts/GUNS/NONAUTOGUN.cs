@@ -11,6 +11,7 @@ public abstract class NONAUTOGUN : Gun
 
         if (ammo == 0) return;
         if (!CanShoot) return;
+        if(reloading) return;
         Prepare();       
     }
     protected abstract void Prepare();
